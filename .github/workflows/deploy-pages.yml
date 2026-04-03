@@ -30,10 +30,10 @@ jobs:
           mkdir public
           mv index-built.html public/index.html
 
-            - name: Upload Pages artifact
-              uses: actions/upload-pages-artifact@v3
-              with:
-                path: public
+      - name: Upload Pages artifact
+        uses: actions/upload-pages-artifact@v3
+        with:
+          path: public
 
   deploy:
     runs-on: ubuntu-latest
