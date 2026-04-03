@@ -35,6 +35,7 @@ jobs:
           fi
           echo "BOOKING_FORM_URL is set."
           perl -0pe 's/__BOOKING_FORM_URL__/$ENV{BOOKING_FORM_URL}/g' index.html > public/index.html
+          cp favicon.svg public/favicon.svg
           if grep -q "__BOOKING_FORM_URL__" public/index.html; then
             echo "Placeholder replacement failed."
             exit 1
