@@ -61,6 +61,8 @@
 
     .topbar {
       padding: 22px 0 10px;
+      position: relative;
+      z-index: 40;
     }
 
     .topbar .shell,
@@ -76,14 +78,16 @@
     .brand-row {
       display: flex;
       align-items: center;
-      justify-content: space-between;
       gap: 16px;
       background: rgba(255, 253, 248, 0.72);
       border: 1px solid rgba(255, 255, 255, 0.55);
       border-radius: 999px;
       padding: 14px 18px;
+      padding-right: 132px;
       box-shadow: 0 12px 28px rgba(76, 49, 31, 0.08);
       backdrop-filter: blur(10px);
+      position: relative;
+      z-index: 41;
     }
 
     .brand {
@@ -135,6 +139,109 @@
       justify-content: flex-end;
       gap: 14px;
       font-size: 0.95rem;
+    }
+
+    .topbar-actions {
+      display: flex;
+      align-items: center;
+      gap: 14px;
+      flex: 1;
+      justify-content: flex-start;
+      padding-left: 20px;
+    }
+
+    .lang-switcher {
+      position: absolute;
+      top: 22px;
+      right: 18px;
+      z-index: 60;
+    }
+
+    .lang-trigger,
+    .lang-option {
+      font: inherit;
+      color: var(--ink);
+    }
+
+    .lang-trigger {
+      display: inline-flex;
+      align-items: center;
+      gap: 10px;
+      min-width: 96px;
+      height: 44px;
+      padding: 0 12px;
+      border-radius: 999px;
+      border: 1px solid rgba(84, 59, 43, 0.1);
+      background: rgba(255, 255, 255, 0.68);
+      box-shadow: 0 10px 24px rgba(76, 49, 31, 0.08);
+      backdrop-filter: blur(10px);
+      font-weight: 700;
+      cursor: pointer;
+      justify-content: space-between;
+    }
+
+    .lang-trigger-text {
+      display: inline-flex;
+      align-items: center;
+      gap: 8px;
+    }
+
+    .lang-flag {
+      font-size: 1rem;
+      line-height: 1;
+    }
+
+    .lang-caret {
+      color: var(--muted);
+      font-size: 0.75rem;
+    }
+
+    .lang-menu {
+      position: absolute;
+      top: calc(100% + 8px);
+      right: 0;
+      min-width: 176px;
+      padding: 8px;
+      margin: 0;
+      list-style: none;
+      background: rgba(255, 252, 247, 0.96);
+      border: 1px solid rgba(84, 59, 43, 0.1);
+      border-radius: 18px;
+      box-shadow: 0 18px 36px rgba(59, 36, 22, 0.14);
+      backdrop-filter: blur(14px);
+      display: none;
+      z-index: 80;
+    }
+
+    .lang-switcher.is-open .lang-menu {
+      display: grid;
+      gap: 4px;
+    }
+
+    .lang-option {
+      width: 100%;
+      display: flex;
+      align-items: center;
+      gap: 10px;
+      border: 0;
+      background: transparent;
+      padding: 10px 12px;
+      border-radius: 12px;
+      cursor: pointer;
+      text-align: left;
+      font-weight: 600;
+    }
+
+    .lang-option:hover,
+    .lang-option:focus-visible,
+    .lang-option.is-active {
+      background: rgba(196, 104, 60, 0.12);
+    }
+
+    .lang-option small {
+      color: var(--muted);
+      font-size: 0.82rem;
+      margin-left: auto;
     }
 
     .hero-wrap {
@@ -523,6 +630,30 @@
         flex-direction: column;
       }
 
+      .topbar-actions {
+        width: 100%;
+        flex-direction: column;
+        align-items: stretch;
+        flex: none;
+        padding-left: 0;
+      }
+
+      .lang-switcher {
+        position: static;
+        width: auto;
+        align-self: flex-end;
+      }
+
+      .lang-trigger {
+        width: auto;
+      }
+
+      .lang-menu {
+        left: 0;
+        right: 0;
+        min-width: 0;
+      }
+
       .button {
         width: 100%;
       }
@@ -535,15 +666,63 @@
       <a class="brand" href="#start" aria-label="Łapa w Łapę">
         <span class="brand-mark" aria-hidden="true">✂</span>
         <span class="brand-copy">
-          <strong>Łapa w Łapę</strong>
-          <small>Grooming dla psów i kotów</small>
+          <strong data-i18n="brandName">Łapa w Łapę</strong>
+          <small data-i18n="brandTagline">Grooming dla psów i kotów</small>
         </span>
       </a>
-      <nav class="nav" aria-label="Nawigacja główna">
-        <a href="#oferta">Oferta</a>
-        <a href="#o-nas">O nas</a>
-        <a href="#kontakt">Kontakt</a>
-      </nav>
+      <div class="topbar-actions">
+        <nav class="nav" aria-label="Nawigacja główna">
+          <a href="#oferta" data-i18n="navOffer">Oferta</a>
+          <a href="#o-nas" data-i18n="navAbout">O nas</a>
+          <a href="#kontakt" data-i18n="navContact">Kontakt</a>
+        </nav>
+        <div class="lang-switcher" id="lang-switcher">
+          <button
+            type="button"
+            class="lang-trigger"
+            id="lang-trigger"
+            aria-haspopup="listbox"
+            aria-expanded="false"
+            aria-label="Wybierz język"
+          >
+            <span class="lang-trigger-text">
+              <span class="lang-flag" id="current-lang-flag">🇵🇱</span>
+              <span id="current-lang-code">PL</span>
+            </span>
+            <span class="lang-caret">▾</span>
+          </button>
+          <ul class="lang-menu" id="lang-menu" role="listbox" aria-label="Language switcher">
+            <li>
+              <button type="button" class="lang-option" data-lang="pl">
+                <span class="lang-flag">🇵🇱</span>
+                <span>Polski</span>
+                <small>PL</small>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="lang-option" data-lang="en">
+                <span class="lang-flag">🇬🇧</span>
+                <span>English</span>
+                <small>EN</small>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="lang-option" data-lang="de">
+                <span class="lang-flag">🇩🇪</span>
+                <span>Deutsch</span>
+                <small>DE</small>
+              </button>
+            </li>
+            <li>
+              <button type="button" class="lang-option" data-lang="ua">
+                <span class="lang-flag">🇺🇦</span>
+                <span>Українська</span>
+                <small>UA</small>
+              </button>
+            </li>
+          </ul>
+        </div>
+      </div>
     </div>
   </header>
 
@@ -551,9 +730,9 @@
     <div class="hero-wrap shell">
       <section class="hero">
         <div class="hero-copy" data-reveal>
-          <span class="eyebrow">Spokojna pielęgnacja, bez pośpiechu</span>
-          <h1>Piękna sierść. Spokojny pupil. Prosty zapis.</h1>
-          <p>
+          <span class="eyebrow" data-i18n="heroEyebrow">Spokojna pielęgnacja, bez pośpiechu</span>
+          <h1 data-i18n="heroTitle">Piękna sierść. Spokojny pupil. Prosty zapis.</h1>
+          <p data-i18n="heroText">
             Kameralny salon groomerski, w którym liczy się komfort zwierzaka i czytelny proces
             umawiania wizyty. Strzyżenie, kąpiel, trymowanie i pielęgnacja dopasowane do potrzeb pupila.
           </p>
@@ -564,10 +743,11 @@
               href="#kontakt"
               target="_blank"
               rel="noreferrer"
+              data-i18n="bookNow"
             >Umów wizytę</a>
-            <a class="button button-secondary" href="#oferta">Zobacz ofertę</a>
+            <a class="button button-secondary" href="#oferta" data-i18n="seeOffer">Zobacz ofertę</a>
           </div>
-          <div class="booking-note" id="booking-note">
+          <div class="booking-note" id="booking-note" data-i18n="bookingNoteDefault">
             Szybka rejestracja online bez zbędnych kroków.
           </div>
         </div>
@@ -578,16 +758,16 @@
           <div class="paw paw-c">🐾</div>
           <div class="details">
             <div class="detail">
-              <strong>Kąpiel i suszenie</strong>
-              <p>Łagodne kosmetyki i spokojne tempo pracy.</p>
+              <strong data-i18n="detailBathTitle">Kąpiel i suszenie</strong>
+              <p data-i18n="detailBathText">Łagodne kosmetyki i spokojne tempo pracy.</p>
             </div>
             <div class="detail">
-              <strong>Strzyżenie i trymowanie</strong>
-              <p>Dopasowane do rasy, sierści i preferencji opiekuna.</p>
+              <strong data-i18n="detailCutTitle">Strzyżenie i trymowanie</strong>
+              <p data-i18n="detailCutText">Dopasowane do rasy, sierści i preferencji opiekuna.</p>
             </div>
             <div class="detail">
-              <strong>Pierwsza wizyta bez stresu</strong>
-              <p>Prosty formularz zapisu i jasna komunikacja przed spotkaniem.</p>
+              <strong data-i18n="detailFirstTitle">Pierwsza wizyta bez stresu</strong>
+              <p data-i18n="detailFirstText">Prosty formularz zapisu i jasna komunikacja przed spotkaniem.</p>
             </div>
           </div>
         </div>
@@ -596,25 +776,25 @@
 
     <section class="section shell highlights" id="oferta">
       <div data-reveal>
-        <p class="eyebrow">Oferta</p>
-        <h2 class="section-title">Najważniejsze usługi w jednym miejscu</h2>
-        <p class="section-intro">
+        <p class="eyebrow" data-i18n="offerEyebrow">Oferta</p>
+        <h2 class="section-title" data-i18n="offerTitle">Najważniejsze usługi w jednym miejscu</h2>
+        <p class="section-intro" data-i18n="offerIntro">
           Strona ma szybko wyjaśnić, czym się zajmujesz i skierować użytkownika do formularza zapisu.
           Bez rozbudowanych podstron, bez zbędnego chaosu.
         </p>
       </div>
       <div class="highlights-grid">
         <article class="card" data-reveal>
-          <h3>Pielęgnacja podstawowa</h3>
-          <p>Kąpiel, suszenie, wyczesanie i higiena uszu oraz pazurków w komfortowych warunkach.</p>
+          <h3 data-i18n="cardCareTitle">Pielęgnacja podstawowa</h3>
+          <p data-i18n="cardCareText">Kąpiel, suszenie, wyczesanie i higiena uszu oraz pazurków w komfortowych warunkach.</p>
         </article>
         <article class="card" data-reveal>
-          <h3>Metamorfoza sierści</h3>
-          <p>Strzyżenie i modelowanie dopasowane do stylu życia zwierzaka oraz oczekiwanego efektu.</p>
+          <h3 data-i18n="cardStyleTitle">Metamorfoza sierści</h3>
+          <p data-i18n="cardStyleText">Strzyżenie i modelowanie dopasowane do stylu życia zwierzaka oraz oczekiwanego efektu.</p>
         </article>
         <article class="card" data-reveal>
-          <h3>Jasny zapis online</h3>
-          <p>Jeden przycisk prowadzi prosto do formularza wizyty, bez niepotrzebnych etapów po drodze.</p>
+          <h3 data-i18n="cardBookingTitle">Jasny zapis online</h3>
+          <p data-i18n="cardBookingText">Jeden przycisk prowadzi prosto do formularza wizyty, bez niepotrzebnych etapów po drodze.</p>
         </article>
       </div>
     </section>
@@ -623,18 +803,18 @@
       <div class="about">
         <div class="about-visual" data-reveal>
           <div class="about-label">
-            <strong>Spokojna atmosfera</strong>
-            <span>Delikatna pielęgnacja, cierpliwe podejście i komfort pupila na każdym etapie wizyty.</span>
+            <strong data-i18n="aboutLabelTitle">Spokojna atmosfera</strong>
+            <span data-i18n="aboutLabelText">Delikatna pielęgnacja, cierpliwe podejście i komfort pupila na każdym etapie wizyty.</span>
           </div>
         </div>
         <div class="about-copy" data-reveal>
-          <p class="eyebrow">O nas</p>
-          <h2>Pielęgnacja z troską o wygląd i dobre samopoczucie</h2>
-          <p>
+          <p class="eyebrow" data-i18n="aboutEyebrow">O nas</p>
+          <h2 data-i18n="aboutTitle">Pielęgnacja z troską o wygląd i dobre samopoczucie</h2>
+          <p data-i18n="aboutText1">
             Dbamy o estetyczny wygląd sierści, wygodę pupila i spokojny przebieg każdej wizyty.
             Pracujemy uważnie, z wyczuciem i szacunkiem do potrzeb zwierzęcia.
           </p>
-          <p>
+          <p data-i18n="aboutText2">
             Zapraszamy na kąpiel, strzyżenie, trymowanie i podstawowe zabiegi pielęgnacyjne
             dopasowane do rodzaju sierści oraz charakteru pupila.
           </p>
@@ -645,9 +825,9 @@
     <section class="shell" id="kontakt">
       <div class="cta" data-reveal>
         <div class="cta-copy">
-          <p class="eyebrow">Rejestracja</p>
-          <h2>Zarejestruj pupila na wizytę</h2>
-          <p>
+          <p class="eyebrow" data-i18n="ctaEyebrow">Rejestracja</p>
+          <h2 data-i18n="ctaTitle">Zarejestruj pupila na wizytę</h2>
+          <p data-i18n="ctaText">
             Kliknij przycisk i przejdź bezpośrednio do formularza rejestracji wizyty.
           </p>
         </div>
@@ -657,49 +837,306 @@
           href="#start"
           target="_blank"
           rel="noreferrer"
+          data-i18n="ctaButton"
         >Przejdź do formularza</a>
       </div>
     </section>
   </main>
 
   <footer class="shell footer">
-    <div class="footer-copy">
+    <div class="footer-copy" data-i18n-html="footerCopy">
       Łapa w Łapę
       <br>
       Grooming z troską o komfort pupila i prostym zapisem online.
     </div>
     <div class="footer-links">
-      <a href="#start">Start</a>
-      <a href="#oferta">Oferta</a>
-      <a href="#o-nas">O nas</a>
+      <a href="#start" data-i18n="footerStart">Start</a>
+      <a href="#oferta" data-i18n="footerOffer">Oferta</a>
+      <a href="#o-nas" data-i18n="footerAbout">O nas</a>
     </div>
-    <div class="footer-meta">Rejestracja online</div>
+    <div class="footer-meta" data-i18n="footerMeta">Rejestracja online</div>
   </footer>
 
   <script>
     const bookingUrl = "__BOOKING_FORM_URL__";
+    const translations = {
+      pl: {
+        pageTitle: "Łapa w Łapę | Grooming z troską",
+        pageDescription: "Salon groomerski dla psów i kotów. Kąpiele, strzyżenie, trymowanie i pielęgnacja w spokojnej atmosferze.",
+        brandName: "Łapa w Łapę",
+        brandTagline: "Grooming dla psów i kotów",
+        navOffer: "Oferta",
+        navAbout: "O nas",
+        navContact: "Kontakt",
+        heroEyebrow: "Spokojna pielęgnacja, bez pośpiechu",
+        heroTitle: "Piękna sierść. Spokojny pupil. Prosty zapis.",
+        heroText: "Kameralny salon groomerski, w którym liczy się komfort zwierzaka i czytelny proces umawiania wizyty. Strzyżenie, kąpiel, trymowanie i pielęgnacja dopasowane do potrzeb pupila.",
+        bookNow: "Umów wizytę",
+        seeOffer: "Zobacz ofertę",
+        bookingNoteDefault: "Szybka rejestracja online bez zbędnych kroków.",
+        bookingNoteActive: "Rejestracja online jest aktywna. Kliknij i wybierz dogodny termin.",
+        detailBathTitle: "Kąpiel i suszenie",
+        detailBathText: "Łagodne kosmetyki i spokojne tempo pracy.",
+        detailCutTitle: "Strzyżenie i trymowanie",
+        detailCutText: "Dopasowane do rasy, sierści i preferencji opiekuna.",
+        detailFirstTitle: "Pierwsza wizyta bez stresu",
+        detailFirstText: "Prosty formularz zapisu i jasna komunikacja przed spotkaniem.",
+        offerEyebrow: "Oferta",
+        offerTitle: "Najważniejsze usługi w jednym miejscu",
+        offerIntro: "Strona ma szybko wyjaśnić, czym się zajmujesz i skierować użytkownika do formularza zapisu. Bez rozbudowanych podstron, bez zbędnego chaosu.",
+        cardCareTitle: "Pielęgnacja podstawowa",
+        cardCareText: "Kąpiel, suszenie, wyczesanie i higiena uszu oraz pazurków w komfortowych warunkach.",
+        cardStyleTitle: "Metamorfoza sierści",
+        cardStyleText: "Strzyżenie i modelowanie dopasowane do stylu życia zwierzaka oraz oczekiwanego efektu.",
+        cardBookingTitle: "Jasny zapis online",
+        cardBookingText: "Jeden przycisk prowadzi prosto do formularza wizyty, bez niepotrzebnych etapów po drodze.",
+        aboutLabelTitle: "Spokojna atmosfera",
+        aboutLabelText: "Delikatna pielęgnacja, cierpliwe podejście i komfort pupila na każdym etapie wizyty.",
+        aboutEyebrow: "O nas",
+        aboutTitle: "Pielęgnacja z troską o wygląd i dobre samopoczucie",
+        aboutText1: "Dbamy o estetyczny wygląd sierści, wygodę pupila i spokojny przebieg każdej wizyty. Pracujemy uważnie, z wyczuciem i szacunkiem do potrzeb zwierzęcia.",
+        aboutText2: "Zapraszamy na kąpiel, strzyżenie, trymowanie i podstawowe zabiegi pielęgnacyjne dopasowane do rodzaju sierści oraz charakteru pupila.",
+        ctaEyebrow: "Rejestracja",
+        ctaTitle: "Zarejestruj pupila na wizytę",
+        ctaText: "Kliknij przycisk i przejdź bezpośrednio do formularza rejestracji wizyty.",
+        ctaButton: "Przejdź do formularza",
+        footerCopy: "Łapa w Łapę<br>Grooming z troską o komfort pupila i prostym zapisem online.",
+        footerStart: "Start",
+        footerOffer: "Oferta",
+        footerAbout: "O nas",
+        footerMeta: "Rejestracja online"
+      },
+      en: {
+        pageTitle: "Paw in Paw | Gentle Grooming",
+        pageDescription: "Dog and cat grooming salon. Baths, trimming, hand-stripping and care in a calm atmosphere.",
+        brandName: "Paw in Paw",
+        brandTagline: "Grooming for dogs and cats",
+        navOffer: "Services",
+        navAbout: "About",
+        navContact: "Contact",
+        heroEyebrow: "Calm grooming, never rushed",
+        heroTitle: "Beautiful coat. Calm pet. Easy booking.",
+        heroText: "A cozy grooming salon where your pet's comfort comes first and booking stays simple. Haircuts, baths, hand-stripping and care tailored to your pet's needs.",
+        bookNow: "Book now",
+        seeOffer: "See services",
+        bookingNoteDefault: "Quick online booking without unnecessary steps.",
+        bookingNoteActive: "Online booking is active. Click and choose a convenient time.",
+        detailBathTitle: "Bath and drying",
+        detailBathText: "Gentle products and a calm pace throughout the visit.",
+        detailCutTitle: "Haircut and hand-stripping",
+        detailCutText: "Adjusted to breed, coat type and owner preferences.",
+        detailFirstTitle: "Stress-free first visit",
+        detailFirstText: "Simple registration form and clear communication before the appointment.",
+        offerEyebrow: "Services",
+        offerTitle: "Everything important in one place",
+        offerIntro: "The page quickly shows what we do and leads visitors straight to the appointment form. No clutter, no extra pages.",
+        cardCareTitle: "Essential care",
+        cardCareText: "Bath, drying, brushing and basic ear and nail hygiene in comfortable conditions.",
+        cardStyleTitle: "Coat transformation",
+        cardStyleText: "Cuts and styling matched to your pet's lifestyle and the look you want.",
+        cardBookingTitle: "Simple online booking",
+        cardBookingText: "One clear button leads straight to the appointment form without extra steps.",
+        aboutLabelTitle: "Calm atmosphere",
+        aboutLabelText: "Gentle care, patient handling and comfort for your pet during every step of the visit.",
+        aboutEyebrow: "About us",
+        aboutTitle: "Grooming with care for looks and wellbeing",
+        aboutText1: "We focus on a beautiful coat, your pet's comfort and a calm experience during every appointment. We work attentively and respectfully with every animal.",
+        aboutText2: "We welcome pets for baths, haircuts, hand-stripping and basic care tailored to coat type and temperament.",
+        ctaEyebrow: "Booking",
+        ctaTitle: "Register your pet for an appointment",
+        ctaText: "Click the button and go directly to the appointment registration form.",
+        ctaButton: "Go to the form",
+        footerCopy: "Paw in Paw<br>Grooming with care for your pet's comfort and easy online booking.",
+        footerStart: "Start",
+        footerOffer: "Services",
+        footerAbout: "About",
+        footerMeta: "Online booking"
+      },
+      de: {
+        pageTitle: "Pfote in Pfote | Sanftes Grooming",
+        pageDescription: "Grooming-Salon fuer Hunde und Katzen. Baden, Schneiden, Trimmen und Pflege in ruhiger Atmosphaere.",
+        brandName: "Pfote in Pfote",
+        brandTagline: "Grooming fuer Hunde und Katzen",
+        navOffer: "Leistungen",
+        navAbout: "Ueber uns",
+        navContact: "Kontakt",
+        heroEyebrow: "Ruhige Pflege ohne Hektik",
+        heroTitle: "Schoenes Fell. Ruhiges Tier. Einfache Buchung.",
+        heroText: "Ein gemuetlicher Grooming-Salon, in dem der Komfort des Tieres im Mittelpunkt steht und die Terminbuchung einfach bleibt. Schneiden, Baden, Trimmen und Pflege passend zu den Beduerfnissen Ihres Lieblings.",
+        bookNow: "Termin buchen",
+        seeOffer: "Leistungen ansehen",
+        bookingNoteDefault: "Schnelle Online-Registrierung ohne unnoetige Schritte.",
+        bookingNoteActive: "Die Online-Registrierung ist aktiv. Klicken Sie und waehlen Sie einen passenden Termin.",
+        detailBathTitle: "Bad und Trocknen",
+        detailBathText: "Sanfte Kosmetik und ein ruhiges Arbeitstempo.",
+        detailCutTitle: "Schneiden und Trimmen",
+        detailCutText: "Angepasst an Rasse, Felltyp und Wuensche des Besitzers.",
+        detailFirstTitle: "Erster Besuch ohne Stress",
+        detailFirstText: "Einfaches Anmeldeformular und klare Kommunikation vor dem Termin.",
+        offerEyebrow: "Leistungen",
+        offerTitle: "Alles Wichtige an einem Ort",
+        offerIntro: "Die Seite erklaert schnell, was wir anbieten, und fuehrt direkt zum Terminformular. Ohne unnoetige Unterseiten und ohne Chaos.",
+        cardCareTitle: "Grundpflege",
+        cardCareText: "Bad, Trocknen, Ausbuersten sowie Ohren- und Krallenpflege in angenehmer Umgebung.",
+        cardStyleTitle: "Fell-Verwandlung",
+        cardStyleText: "Schnitt und Styling passend zum Alltag des Tieres und zum gewuenschten Ergebnis.",
+        cardBookingTitle: "Klare Online-Buchung",
+        cardBookingText: "Ein einziger Button fuehrt direkt zum Terminformular, ohne unnoetige Zwischenschritte.",
+        aboutLabelTitle: "Ruhige Atmosphaere",
+        aboutLabelText: "Sanfte Pflege, geduldiger Umgang und Komfort fuer Ihr Tier bei jedem Schritt des Besuchs.",
+        aboutEyebrow: "Ueber uns",
+        aboutTitle: "Pflege mit Blick auf Aussehen und Wohlbefinden",
+        aboutText1: "Wir achten auf ein gepflegtes Fell, den Komfort des Tieres und einen ruhigen Ablauf bei jedem Termin. Wir arbeiten aufmerksam, einfuehlsam und respektvoll.",
+        aboutText2: "Wir bieten Baden, Schneiden, Trimmen und grundlegende Pflege, abgestimmt auf Felltyp und Charakter des Tieres.",
+        ctaEyebrow: "Registrierung",
+        ctaTitle: "Melden Sie Ihr Tier fuer einen Termin an",
+        ctaText: "Klicken Sie auf den Button und gehen Sie direkt zum Formular fuer die Terminregistrierung.",
+        ctaButton: "Zum Formular",
+        footerCopy: "Pfote in Pfote<br>Grooming mit Ruecksicht auf den Komfort Ihres Tieres und einfacher Online-Buchung.",
+        footerStart: "Start",
+        footerOffer: "Leistungen",
+        footerAbout: "Ueber uns",
+        footerMeta: "Online-Registrierung"
+      },
+      ua: {
+        pageTitle: "Лапа в Лапу | Дбайливий грумінг",
+        pageDescription: "Грумінг-салон для собак і котів. Купання, стрижка, тримінг і догляд у спокійній атмосфері.",
+        brandName: "Лапа в Лапу",
+        brandTagline: "Грумінг для собак і котів",
+        navOffer: "Послуги",
+        navAbout: "Про нас",
+        navContact: "Контакт",
+        heroEyebrow: "Спокійний догляд без поспіху",
+        heroTitle: "Гарна шерсть. Спокійний улюбленець. Простий запис.",
+        heroText: "Затишний грумінг-салон, де на першому місці комфорт тварини та зрозумілий запис на візит. Стрижка, купання, тримінг і догляд відповідно до потреб улюбленця.",
+        bookNow: "Записатися",
+        seeOffer: "Переглянути послуги",
+        bookingNoteDefault: "Швидкий онлайн-запис без зайвих кроків.",
+        bookingNoteActive: "Онлайн-запис активний. Натисніть і виберіть зручний час.",
+        detailBathTitle: "Купання і сушіння",
+        detailBathText: "Делікатна косметика та спокійний темп роботи.",
+        detailCutTitle: "Стрижка і тримінг",
+        detailCutText: "З урахуванням породи, типу шерсті та побажань власника.",
+        detailFirstTitle: "Перший візит без стресу",
+        detailFirstText: "Проста форма запису та зрозуміле спілкування перед візитом.",
+        offerEyebrow: "Послуги",
+        offerTitle: "Найважливіші послуги в одному місці",
+        offerIntro: "Сторінка швидко пояснює, чим ми займаємося, і веде користувача просто до форми запису. Без зайвих сторінок і хаосу.",
+        cardCareTitle: "Базовий догляд",
+        cardCareText: "Купання, сушіння, вичісування та гігієна вух і кігтів у комфортних умовах.",
+        cardStyleTitle: "Оновлення шерсті",
+        cardStyleText: "Стрижка та стиль відповідно до способу життя тварини та бажаного результату.",
+        cardBookingTitle: "Зручний онлайн-запис",
+        cardBookingText: "Одна зрозуміла кнопка веде просто до форми запису без зайвих етапів.",
+        aboutLabelTitle: "Спокійна атмосфера",
+        aboutLabelText: "Делікатний догляд, терплячий підхід і комфорт улюбленця на кожному етапі візиту.",
+        aboutEyebrow: "Про нас",
+        aboutTitle: "Догляд із турботою про зовнішність і самопочуття",
+        aboutText1: "Ми дбаємо про гарний вигляд шерсті, комфорт улюбленця та спокійний перебіг кожного візиту. Працюємо уважно, делікатно й з повагою до потреб тварини.",
+        aboutText2: "Запрошуємо на купання, стрижку, тримінг і базові процедури догляду, підібрані під тип шерсті та характер улюбленця.",
+        ctaEyebrow: "Запис",
+        ctaTitle: "Зареєструйте улюбленця на візит",
+        ctaText: "Натисніть кнопку та перейдіть безпосередньо до форми запису на візит.",
+        ctaButton: "Перейти до форми",
+        footerCopy: "Лапа в Лапу<br>Грумінг із турботою про комфорт улюбленця та зручний онлайн-запис.",
+        footerStart: "Початок",
+        footerOffer: "Послуги",
+        footerAbout: "Про нас",
+        footerMeta: "Онлайн-запис"
+      }
+    };
     const bookingAnchors = [
       document.getElementById("booking-link"),
       document.getElementById("cta-booking-link")
     ];
     const bookingNote = document.getElementById("booking-note");
+    const langSwitcher = document.getElementById("lang-switcher");
+    const langTrigger = document.getElementById("lang-trigger");
+    const langMenu = document.getElementById("lang-menu");
+    const currentLangFlag = document.getElementById("current-lang-flag");
+    const currentLangCode = document.getElementById("current-lang-code");
+    const langButtons = document.querySelectorAll(".lang-option[data-lang]");
+    const html = document.documentElement;
+    const metaDescription = document.querySelector('meta[name="description"]');
+    const languageMeta = {
+      pl: { flag: "🇵🇱", code: "PL" },
+      en: { flag: "🇬🇧", code: "EN" },
+      de: { flag: "🇩🇪", code: "DE" },
+      ua: { flag: "🇺🇦", code: "UA" }
+    };
 
     const hasBookingUrl =
       bookingUrl &&
       bookingUrl !== "__BOOKING_FORM_URL__" &&
       /^https?:\/\//.test(bookingUrl);
 
+    function applyTranslations(lang) {
+      const dict = translations[lang] || translations.pl;
+      html.lang = lang === "ua" ? "uk" : lang;
+      document.title = dict.pageTitle;
+      metaDescription.setAttribute("content", dict.pageDescription);
+      document.querySelectorAll("[data-i18n]").forEach((element) => {
+        const key = element.dataset.i18n;
+        if (dict[key]) {
+          element.textContent = dict[key];
+        }
+      });
+      document.querySelectorAll("[data-i18n-html]").forEach((element) => {
+        const key = element.dataset.i18nHtml;
+        if (dict[key]) {
+          element.innerHTML = dict[key];
+        }
+      });
+      bookingNote.textContent = hasBookingUrl ? dict.bookingNoteActive : dict.bookingNoteDefault;
+      langButtons.forEach((button) => {
+        button.classList.toggle("is-active", button.dataset.lang === lang);
+      });
+      currentLangFlag.textContent = languageMeta[lang].flag;
+      currentLangCode.textContent = languageMeta[lang].code;
+      localStorage.setItem("preferred-language", lang);
+    }
+
     if (hasBookingUrl) {
       bookingAnchors.forEach((link) => {
         link.href = bookingUrl;
       });
-      bookingNote.textContent = "Rejestracja online jest aktywna. Kliknij i wybierz dogodny termin.";
     } else {
       bookingAnchors.forEach((link) => {
         link.removeAttribute("target");
         link.removeAttribute("rel");
       });
     }
+
+    function closeLanguageMenu() {
+      langSwitcher.classList.remove("is-open");
+      langTrigger.setAttribute("aria-expanded", "false");
+    }
+
+    langTrigger.addEventListener("click", () => {
+      const isOpen = langSwitcher.classList.toggle("is-open");
+      langTrigger.setAttribute("aria-expanded", String(isOpen));
+    });
+
+    langButtons.forEach((button) => {
+      button.addEventListener("click", () => {
+        applyTranslations(button.dataset.lang);
+        closeLanguageMenu();
+      });
+    });
+
+    document.addEventListener("click", (event) => {
+      if (!langSwitcher.contains(event.target)) {
+        closeLanguageMenu();
+      }
+    });
+
+    document.addEventListener("keydown", (event) => {
+      if (event.key === "Escape") {
+        closeLanguageMenu();
+      }
+    });
+
+    applyTranslations(localStorage.getItem("preferred-language") || "pl");
 
     const observer = new IntersectionObserver((entries) => {
       entries.forEach((entry) => {
